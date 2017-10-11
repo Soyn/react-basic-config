@@ -5,7 +5,11 @@ var BUILD_DIR = path.resolve(__dirname, 'build');
 var APP_DIR = path.resolve(__dirname, 'src/app');
 
 var config = {
-    entry: APP_DIR + '/index.jsx',
+    devtool: '#source-map',
+    entry: [
+        'babel-polyfill',
+        APP_DIR + '/index.jsx',
+    ],
     output: {
         path: BUILD_DIR,
         filename: 'bundle.js',
@@ -15,10 +19,18 @@ var config = {
         loaders: [
             {
                 test: /\.jsx?/,
+                exclude: '/node_modules/',
                 include: APP_DIR,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                query:
+                {
+                    presets: ['es2015']
+                }
             }
         ]
+    },
+    resolve: {
+        extensions: ['.jsx','.js']
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
