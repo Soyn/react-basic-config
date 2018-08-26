@@ -3,6 +3,7 @@ var path = require('path');
 
 var BUILD_DIR = path.resolve(__dirname, 'build');
 var APP_DIR = path.resolve(__dirname, 'src/app');
+var sassLoader = 'style-loader!css-loader!sass-loader?sourceMap=true&sourceMapContents=true';
 
 var config = {
     entry: APP_DIR + '/index.jsx',
@@ -15,11 +16,22 @@ var config = {
     module: {
         loaders: [
             {
-                test: /\.jsx?/,
+                test: /\.js?$|\.jsx?$/,
                 include: APP_DIR,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                exclude: '/node_modules/'
+            },
+            {
+                test: /\.scss$/,
+                include: [
+                    path.resolve(__dirname, APP_DIR + '/style')
+                ],
+                loader: sassLoader,
             }
         ]
+    },
+    resolve: {
+        extensions: ['.js', '.jsx'],
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
