@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 var BUILD_DIR = path.resolve(__dirname, 'build');
-var APP_DIR = path.resolve(__dirname, 'src/app');
+var APP_DIR = path.resolve(__dirname, 'src');
 var sassLoader = 'style-loader!css-loader!sass-loader?sourceMap=true&sourceMapContents=true';
 
 var config = {
@@ -24,10 +24,14 @@ var config = {
             {
                 test: /\.scss$/,
                 include: [
-                    path.resolve(__dirname, 'src/')
+                    path.resolve(__dirname, APP_DIR)
                 ],
                 loader: sassLoader,
-            }
+            },
+            {
+                test: /\.(jpe?g|png|gif|svg|jpg)$/i,
+                loader: 'url-loader?limit=30000&name=images/[name].[ext]'
+            },
         ]
     },
     resolve: {
@@ -38,7 +42,7 @@ var config = {
         new webpack.NoErrorsPlugin(),
     ],
     devServer: {
-        contentBase: path.resolve(__dirname, 'src/app'),
+        contentBase: path.resolve(__dirname, APP_DIR),
         port: 59018,
         hot: true,
         disableHostCheck: true,

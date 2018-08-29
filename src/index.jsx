@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {render} from 'react-dom';
-import { Tabs , TabPanel } from './02';
+import { Tabs , TabPanel, QrCode } from './app/02';
 
-class App extends Component {
+class TabsDemo extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,7 +12,6 @@ class App extends Component {
   }
 
   handleChange(e) {
-    console.log(e.target.value);
     this.setState({
       activeIndex: parseInt(e.target.value, 10),
     });
@@ -40,4 +39,14 @@ class App extends Component {
   }
 }
 
+class App extends Component {
+  render() {
+    return (
+      <div id="demos-container">
+        <TabsDemo />
+        <QrCode />
+      </div>
+    )
+  }
+}
 render(<App />, document.getElementById('root'));

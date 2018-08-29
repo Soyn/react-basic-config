@@ -59,3 +59,21 @@ ul {
     display: block;
   }
 }
+
+.qr-wrapper {
+  width: 700px;
+  height: 760px;
+  border: 1px solid purple;
+  padding: 5px;
+
+  .qr {
+    margin: 0 auto;
+    display: block;
+  }
+  .code {
+    margin-top: 10px;
+    img {
+      width: 100%;
+    }
+  }
+}

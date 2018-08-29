@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import qrImage from './qr.jpg'
+import styles from './style.scss'
 class QRCode extends Component {
   constructor(props) {
     super(props);
@@ -43,12 +44,6 @@ class QRCode extends Component {
   render() {
     return(
       <div className="qr-wrapper"
-        style={{
-          width: '700px',
-          height: '760px',
-          border: '1px solid purple',
-          padding: '5px'
-        }}
       >
         <button className="qr"
           onClick={this.handleClick}
@@ -59,7 +54,7 @@ class QRCode extends Component {
             display: this.state.active ? 'block' : 'none'
           }}
         >
-          <img src="./qr.jpg" />
+          <img src={qrImage} />
         </div>
       </div>
     )
