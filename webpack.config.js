@@ -24,7 +24,7 @@ var config = {
             {
                 test: /\.scss$/,
                 include: [
-                    path.resolve(__dirname, APP_DIR + '/style')
+                    path.resolve(__dirname, 'src/')
                 ],
                 loader: sassLoader,
             }

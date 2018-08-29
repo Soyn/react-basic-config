@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {render} from 'react-dom';
-import Tabs from './Tabs';
-import TabPanel from './TabPanel';
+import { Tabs , TabPanel } from './02';
+
 class App extends Component {
   constructor(props) {
     super(props);

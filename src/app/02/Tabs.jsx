@@ -1,6 +1,6 @@
 import React, { Component,  } from 'react';
 import PropTypes from 'prop-types';
-import styles from './style/style.scss';
+import styles from './style.scss';
 import TabNav from './TabNav';
 import TabContent from './TabContent';
 import classnames from 'classnames';
