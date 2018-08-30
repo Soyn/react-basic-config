@@ -3,19 +3,37 @@ function Promise(fn) {
   let value;
   let deferred;
 
-
-  this.then = function (onResolved) {
-    handle(onResolved);
-  }
-
-  function handle(onResolved) {
+  function handle(handler) {
     if (state === 'pending') {
-      deferred = onResolved;
+      deferred = handler;
       return;
     }
-    onResolved(value);
+
+    // need to make resolve async
+    setTimeout(function () {
+      if (!handler.onResolved) {
+        handle.resolve(value);
+        return;
+      }
+      let ret;
+
+      try {
+        ret = handler.onResolved(value);
+      } catch (e) {
+        handler.reject(e);
+        return;
+      }
+      handler.resolve(ret);
+    }, 1);
   }
+
   function resolve(newValue) {
+
+    // when thw then return promise, we r
+    if (newValue && typeof newValue.then === 'function') {
+      newValue.then(resolve);
+      return;
+    }
     value = newValue;
     state = 'resolved';
 
@@ -24,7 +42,24 @@ function Promise(fn) {
     }
   }
 
-  fn(resolve)
+  function reject(reason) {
+    state = 'rejected';
+    value = reason;
+
+    if(deferred) {
+      handle(deferred);
+    }
+  }
+  this.then = function (onResolved) {
+    return new Promise(function (resolve) {
+      handle({
+        onResolved: onResolved,
+        resolve: resolve,
+      });
+    });
+  }
+
+  fn(resolve);
 }
 function doSomething() {
   return new Promise(function (resolve) {
@@ -32,6 +67,11 @@ function doSomething() {
     resolve(value);
   })
 }
-doSomething().then(function (value) {
-  console.log("got a value", value);
-})
+doSomething()
+  .then(function (value) {
+    console.log("got a value", value);
+    return 88;
+  })
+  .then(function (secondResult) {
+    console.log('second result', secondResult);
+  })
