@@ -148,4 +148,83 @@ workflow:
   这段代码表示，如果再一次更新中多次setState，最后会将多次setState合并成一次。
 
   在更新当前component完成之后就会将向下遍历child，child再作为更新节点，继续走这个workLoop，从头撸到尾，撸一遍，workLoop完了之后，新的更新之后的组件就拿到了，将这个新的组件数commit，commit完之后，就取下一次的最高优先级的root，再重复走这一过程，直到没有更新的root
+  
+  performWorkOnRoot之后就将本次root上的更新commit掉，commit的调用关系如下：
 
+   ---> performWorkOnRoot
+     ---> completeRoot
+       ---> commitRoot
+         ---> prepareForCommit
+         ---> commitBeforeMutationLifecycles
+         ---> commitAllHostEffects
+           ---> commit
+         ---> commitAllLifeCycles
+
+
+commit之前的perform的工作就是将所有的更新计算出来，对应fiberNode上的更新使用effectTag这个东西表示，在commit阶段，就将这些更新apply上去，类似于git的提交，commit之前的工作是计算diff的内容，将diff add之后即生成了firberNode的结构来结构化数据（类似于git中的blob, tree这些结构），然后将这些commit之后才算将diff应用到git中。如上的调用是react commit的阶段：
+  `commitBeforeMutationLifecycles`主要是调用了`getSnapshotBeforeUpdate`这个方法，保存了当前FiberNode的一份快照（放在虚拟dom的`__reactInternalSnapshotBeforeUpdate`属性上）
+
+  `commitAllHostEffects`commit分成了两步，第一步是执行host的插入、更新、删除、ref的卸载，部分代码如下:
+```javascript
+    ......
+     var effectTag = nextEffect.effectTag;
+
+      if (effectTag & ContentReset) {
+        commitResetTextContent(nextEffect);  //将content清空
+      }
+
+      if (effectTag & Ref) {
+        var current = nextEffect.alternate;
+        if (current !== null) {
+          commitDetachRef(current);  // 将ref置null
+        }
+      }
+      ......
+```
+剩下的代码就是一些更新的操作，如Placement、Update、Deletion、PlacementAndUpdate，部分代码如下：
+
+```javascript
+      // The following switch statement is only concerned about placement,
+      // updates, and deletions. To avoid needing to add a case for every
+      // possible bitmap value, we remove the secondary effects from the
+      // effect tag and switch on that value.
+      var primaryEffectTag = effectTag & (Placement | Update | Deletion);
+      switch (primaryEffectTag) {
+        case Placement:
+          {
+            commitPlacement(nextEffect);
+            // Clear the "placement" from effect tag so that we know that this is inserted, before
+            // any life-cycles like componentDidMount gets called.
+            // TODO: findDOMNode doesn't rely on this any more but isMounted
+            // does and isMounted is deprecated anyway so we should be able
+            // to kill this.
+            nextEffect.effectTag &= ~Placement;
+            break;
+          }
+        case PlacementAndUpdate:
+          {
+            // Placement
+            commitPlacement(nextEffect);
+            // Clear the "placement" from effect tag so that we know that this is inserted, before
+            // any life-cycles like componentDidMount gets called.
+            nextEffect.effectTag &= ~Placement;
+
+            // Update
+            var _current = nextEffect.alternate;
+            commitWork(_current, nextEffect);
+            break;
+          }
+        case Update:
+          {
+            var _current2 = nextEffect.alternate;
+            commitWork(_current2, nextEffect);
+            break;
+          }
+        case Deletion:
+          {
+            commitDeletion(nextEffect);
+            break;
+          }
+      }
+```
+  这里的commit就是真正的将diff apply到dom上，到这里就完成可setState的一次更新。
