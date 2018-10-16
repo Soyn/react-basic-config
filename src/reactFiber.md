@@ -79,7 +79,7 @@ workflow:
                 ---> beginWork
 ```
 
-如上是performSyncWork的整个调用关系，这个就是执行副作用，浏览器提供了新的api requestIdleCallback，这个函数就是在一帧（fps为60ms的时候为流畅），如果当前帧执行完成花不了60ms，那么空闲下来的时间就可以用于来执行requestIdleCallback的回调；但是存在这么一种情况，因为我们利用的是每一帧的空闲时间，如果浏览器一直处于繁忙状态的话，就一直执行不了，但是这个行为却不是我们希望的，这个时候在调用requestIdleCallback的时候传入第二个配置参数timeout，如果超过这个时间这个函数还没被调用的话，在下一个空闲的时间就会将这个回调插入；在这个新的API调用下，有几个操作是强烈不建议的：
+如上是performSyncWork的整个调用关系，这个就是计算diff，浏览器提供了新的api requestIdleCallback，这个函数就是在一帧（fps为60ms的时候为流畅），如果当前帧执行完成花不了60ms，那么空闲下来的时间就可以用于来执行requestIdleCallback的回调；但是存在这么一种情况，因为我们利用的是每一帧的空闲时间，如果浏览器一直处于繁忙状态的话，就一直执行不了，但是这个行为却不是我们希望的，这个时候在调用requestIdleCallback的时候传入第二个配置参数timeout，如果超过这个时间这个函数还没被调用的话，在下一个空闲的时间就会将这个回调插入；在这个新的API调用下，有几个操作是强烈不建议的：
   - 尽量不要修改dom，因为本身回调是在一帧的空闲时间调用的，这个空闲时间是完成了js计算、布局计算、重绘这些操作，如果修改了dom，那么这一帧做的计算就白做了（影响性能），而且修改dom操作的时间是不可预测的，因此很容易超出当前帧空间的阈值。
   - Promise的resolve（reject）也不建议放在里面，因为promise的回调在idle的回调执行完成后立即执行，会拉长当前帧的消耗。
 
@@ -106,7 +106,7 @@ workflow:
     }
     ......
   ```
-  从上面的代码可以看出来，更新一个class组件的时候，这个更新中有三个场景，初次挂载、中断恢复、数据改变导致的组件刷新，分析`updateClassInstance`的代码可以看到在更新组件的时候几个生命周期寒素调用：
+  从上面的代码可以看出来，更新一个class组件的时候，这个更新中有三个场景，初次挂载、中断恢复、数据改变导致的组件刷新，分析`updateClassInstance`的代码可以看到在更新组件的时候几个生命周期函数调用：
   ```javascript
     function updateClassInstance(current, workInProgress, renderExpirationTime) {
    var ctor = workInProgress.type;
