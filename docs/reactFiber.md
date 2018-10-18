@@ -7,8 +7,7 @@ workflow:
     ---> updater
       ---> enqueueSetState
         ---> insertUpdateIntoFiber（将本次update入队）
-        ---> scheduleWork（）
-
+        ---> scheduleWork()
 在setState之后回调用updater下的qneueueSetState，主要的更新逻辑就是在enqueueSetState中，为了了解这个过程，要明白在新的fiber架构下，fiber node的数据结构：
 
 ```javascript
