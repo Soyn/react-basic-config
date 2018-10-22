@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {render} from 'react-dom';
 import { Tabs , TabPanel, QrCode } from './app/02';
-
+import { BootStrapButton } from './components/Button';
+import { BootstrapAlert } from './components/Alert';
+import { BootstrapBadge } from './components/Badge';
+import { BootstrapBreadcrumb } from './components/Breadcrumb';
 class TabsDemo extends Component {
   constructor(props) {
     super(props);
@@ -43,8 +46,11 @@ class App extends Component {
   render() {
     return (
       <div id="demos-container">
-        <TabsDemo />
-        <QrCode />
+        {/* <BootStrapButton />
+        <BootstrapAlert />
+        <BootstrapBadge />
+        <BootstrapBreadcrumb /> */}
+        <div className="test">Test</div>
       </div>
     )
   }
