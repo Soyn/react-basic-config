@@ -5,6 +5,9 @@ import { BootStrapButton } from './components/Button';
 import { BootstrapAlert } from './components/Alert';
 import { BootstrapBadge } from './components/Badge';
 import { BootstrapBreadcrumb } from './components/Breadcrumb';
+import { BootstrapButtonGroup } from './components/ButtonGroup';
+import { BootstrapCard } from './components/Card';
+import { BootstrapCarousel } from './components/Carousel';
 class TabsDemo extends Component {
   constructor(props) {
     super(props);
@@ -46,11 +49,13 @@ class App extends Component {
   render() {
     return (
       <div id="demos-container">
-        {/* <BootStrapButton />
+        <BootStrapButton />
         <BootstrapAlert />
         <BootstrapBadge />
-        <BootstrapBreadcrumb /> */}
-        <div className="test">Test</div>
+        <BootstrapBreadcrumb />
+        <BootstrapButtonGroup />
+        <BootstrapCard />
+        <BootstrapCarousel />
       </div>
     )
   }
