@@ -43,7 +43,7 @@ var config = {
     ],
     devServer: {
         contentBase: path.resolve(__dirname, APP_DIR),
-        port: 48527,
+        port: 8080,
         hot: true,
         disableHostCheck: true,
         inline: true,
