@@ -1,0 +1,13 @@
+.app {
+  width: 200px;
+  height: 120px;
+  .list-container {
+    margin-top: 10px;
+  }
+  .item {
+    display: inline-block;
+    font-size: 2em;
+    margin-right: 5px;
+    border: 1px solid;
+  }
+}
