@@ -37,7 +37,7 @@
     "classnames": "^2.2.6",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.13.1",
     "prop-types": "^15.6.2",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
